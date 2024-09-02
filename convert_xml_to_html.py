@@ -8,6 +8,17 @@ def timestamped_filename(base_path, extension):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{base_path}_{timestamp}.{extension}"
 
+# Function to get the most recent XML file
+def get_most_recent_file(directory, extension):
+    files = [f for f in os.listdir(directory) if f.endswith(f".{extension}")]
+    if not files:
+        raise FileNotFoundError(f"No files with extension {extension} found in {directory}")
+    
+    # Get full paths and sort by modification time
+    full_paths = [os.path.join(directory, f) for f in files]
+    most_recent_file = max(full_paths, key=os.path.getmtime)
+    return most_recent_file
+
 # Configure logging
 log_filename = timestamped_filename('C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\Log\\transform', 'log')
 logging.basicConfig(
@@ -50,10 +61,13 @@ def transform_xml_to_html(xml_file, xslt_file, html_file):
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
 
-# Paths to your files
-xml_file = timestamped_filename('C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\XML\\TEST-CalculatorTestSuite', 'xml')
+# Paths to directories
+xml_directory = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\Reports\\XML'
 xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
-html_file = timestamped_filename('C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\HTML\\TEST-CalculatorTestSuite', 'html')
+
+# Get the most recent XML file
+xml_file = get_most_recent_file(xml_directory, 'xml')
+html_file = timestamped_filename('C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\Reports\\HTML\\TEST-CalculatorTestSuite', 'html')
 
 # Execute the transformation
 transform_xml_to_html(xml_file, xslt_file, html_file)
