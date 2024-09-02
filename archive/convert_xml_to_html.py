@@ -50,3 +50,4 @@ html_file = 'C:\\Reports\\SoapUI_CICD_Calculator\\TEST-CalculatorTestSuite.html'
 
 # Execute the transformation
 transform_xml_to_html(xml_file, xslt_file, html_file)
+
