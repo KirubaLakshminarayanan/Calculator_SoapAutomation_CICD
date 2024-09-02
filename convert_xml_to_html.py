@@ -8,6 +8,14 @@ def timestamped_filename(base_path, extension):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{base_path}_{timestamp}.{extension}"
 
+# Function to get the latest directory from a base directory
+def get_latest_directory(base_directory):
+    dirs = [d for d in os.listdir(base_directory) if os.path.isdir(os.path.join(base_directory, d))]
+    if not dirs:
+        raise FileNotFoundError(f"No directories found in {base_directory}")
+    latest_dir = max(dirs, key=lambda d: os.path.getmtime(os.path.join(base_directory, d)))
+    return os.path.join(base_directory, latest_dir)
+
 # Function to get the latest file from a directory
 def get_latest_file(directory, extension):
     files = [f for f in os.listdir(directory) if f.endswith(f'.{extension}')]
@@ -61,12 +69,13 @@ def transform_xml_to_html(xml_file, xslt_file, html_file):
         logging.error(f"An unexpected error occurred: {e}")
 
 # Paths to directories
-xml_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML'
+xml_base_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML'
 html_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\HTML'
 xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
 
-# Get the latest XML file
-xml_file = get_latest_file(xml_dir, 'xml')
+# Get the latest directory and file
+latest_xml_dir = get_latest_directory(xml_base_dir)
+xml_file = get_latest_file(latest_xml_dir, 'xml')
 
 # Generate a corresponding HTML file name
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
