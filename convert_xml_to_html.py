@@ -8,6 +8,14 @@ def timestamped_filename(base_path, extension):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{base_path}_{timestamp}.{extension}"
 
+# Function to get the latest file from a directory
+def get_latest_file(directory, extension):
+    files = [f for f in os.listdir(directory) if f.endswith(f'.{extension}')]
+    if not files:
+        raise FileNotFoundError(f"No files with extension .{extension} found in {directory}")
+    latest_file = max(files, key=lambda f: os.path.getmtime(os.path.join(directory, f)))
+    return os.path.join(directory, latest_file)
+
 # Generate a timestamped log filename
 log_filename = timestamped_filename('C:\\Reports\\SoapUI_CICD_Calculator\\Log\\transform', 'log')
 
@@ -52,11 +60,17 @@ def transform_xml_to_html(xml_file, xslt_file, html_file):
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
 
-# Generate timestamped paths for XML and HTML files
-timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-xml_file = f'C:\\Reports\\SoapUI_CICD_Calculator\\XML\\TEST-CalculatorTestSuite_{timestamp}.xml'
+# Paths to directories
+xml_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML'
+html_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\HTML'
 xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
-html_file = f'C:\\Reports\\SoapUI_CICD_Calculator\\HTML\\TEST-CalculatorTestSuite_{timestamp}.html'
+
+# Get the latest XML file
+xml_file = get_latest_file(xml_dir, 'xml')
+
+# Generate a corresponding HTML file name
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+html_file = f'{html_dir}\\TEST-CalculatorTestSuite_{timestamp}.html'
 
 # Execute the transformation
 transform_xml_to_html(xml_file, xslt_file, html_file)
