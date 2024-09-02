@@ -1,15 +1,9 @@
 import logging
 from lxml import etree
 import os
-from datetime import datetime
-
-# Function to generate timestamped filename
-def timestamped_filename(base_path, extension):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    return f"{base_path}_{timestamp}.{extension}"
 
 # Configure logging
-log_filename = timestamped_filename('C:\\Reports\\SoapUI_CICD_Calculator\\Log\\transform', 'log')
+log_filename = 'C:\\Reports\\SoapUI_CICD_Calculator\\Log\\transform.log'
 logging.basicConfig(
     filename=log_filename,
     level=logging.DEBUG,
@@ -51,9 +45,9 @@ def transform_xml_to_html(xml_file, xslt_file, html_file):
         logging.error(f"An unexpected error occurred: {e}")
 
 # Paths to your files
-xml_file = timestamped_filename('C:\\Reports\\SoapUI_CICD_Calculator\\XML\\TEST-CalculatorTestSuite', 'xml')
+xml_file = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML\\TEST-CalculatorTestSuite.xml'
 xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
-html_file = timestamped_filename('C:\\Reports\\SoapUI_CICD_Calculator\\HTML\\TEST-CalculatorTestSuite', 'html')
+html_file = 'C:\\Reports\\SoapUI_CICD_Calculator\\HTML\\TEST-CalculatorTestSuite.html'
 
 # Execute the transformation
 transform_xml_to_html(xml_file, xslt_file, html_file)
