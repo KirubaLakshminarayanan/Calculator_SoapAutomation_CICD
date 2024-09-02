@@ -4,7 +4,7 @@ import os
 
 # Configure logging
 logging.basicConfig(
-    filename='C:\\Reports\\SoapUI_CICD_Calculator\\transform.log',
+    filename='C:\\Reports\\SoapUI_CICD_Calculator\\Log\\transform.log',
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
@@ -44,9 +44,9 @@ def transform_xml_to_html(xml_file, xslt_file, html_file):
         logging.error(f"An unexpected error occurred: {e}")
 
 # Paths to your files
-xml_file = 'C:\\Reports\\SoapUI_CICD_Calculator\\TEST-CalculatorTestSuite.xml'
+xml_file = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML\\TEST-CalculatorTestSuite.xml'
 xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
-html_file = 'C:\\Reports\\SoapUI_CICD_Calculator\\TEST-CalculatorTestSuite.html'
+html_file = 'C:\\Reports\\SoapUI_CICD_Calculator\\HTML\\TEST-CalculatorTestSuite.html'
 
 # Execute the transformation
 transform_xml_to_html(xml_file, xslt_file, html_file)
