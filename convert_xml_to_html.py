@@ -8,11 +8,11 @@ def timestamped_filename(base_path, extension):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{base_path}_{timestamp}.{extension}"
 
-# Function to get the latest directory from a directory
-def get_latest_directory(directory):
-    dirs = [d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d))]
+# Function to get the latest directory from a directory that matches a prefix
+def get_latest_directory(directory, prefix):
+    dirs = [d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d)) and d.startswith(prefix)]
     if not dirs:
-        raise FileNotFoundError(f"No directories found in {directory}")
+        raise FileNotFoundError(f"No directories starting with {prefix} found in {directory}")
     latest_dir = max(dirs, key=lambda d: os.path.getmtime(os.path.join(directory, d)))
     return os.path.join(directory, latest_dir)
 
@@ -73,8 +73,8 @@ xml_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML'
 html_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\HTML'
 xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
 
-# Get the latest XML directory
-latest_dir = get_latest_directory(xml_dir)
+# Get the latest XML directory with the prefix 'TEST-CalculatorTestSuite'
+latest_dir = get_latest_directory(xml_dir, 'TEST-CalculatorTestSuite')
 
 # Get the latest XML file from the latest directory
 xml_file = get_latest_file(latest_dir, 'xml')
