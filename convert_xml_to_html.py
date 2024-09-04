@@ -1,5 +1,4 @@
 import logging
-import shutil
 import os
 from lxml import etree
 from datetime import datetime
@@ -9,24 +8,41 @@ def timestamped_filename(base_path, extension):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{base_path}_{timestamp}.{extension}"
 
-# Function to back up XML file
-def backup_xml_file(source_file, backup_dir):
-    if not os.path.exists(source_file):
-        raise FileNotFoundError(f"Source XML file not found: {source_file}")
+# Function to find the most recent XML file
+def find_most_recent_xml(directory):
+    # Get all XML files in the directory
+    xml_files = [f for f in os.listdir(directory) if f.endswith('.xml')]
     
-    if not os.path.exists(backup_dir):
-        os.makedirs(backup_dir)
+    if not xml_files:
+        raise FileNotFoundError(f"No XML files found in directory: {directory}")
 
-    backup_file = timestamped_filename(os.path.join(backup_dir, 'TEST-CalculatorTestSuite_backup'), 'xml')
-    shutil.copy2(source_file, backup_file)
-    logging.info(f"Backup created: {backup_file}")
+    # Find the most recent XML file
+    most_recent_file = max(xml_files, key=lambda f: os.path.getmtime(os.path.join(directory, f)))
+    return os.path.join(directory, most_recent_file)
+
+# Function to ensure a directory exists
+def ensure_directory(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        logging.info(f"Created directory: {directory}")
+    else:
+        logging.info(f"Directory already exists: {directory}")
 
 # Hardcoded paths
-xml_file = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML\\TEST-CalculatorTestSuite.xml'
+xml_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML'
 html_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\HTML'
 xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
 log_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\Log'
-backup_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\Backup'
+
+# Ensure the necessary directories exist
+ensure_directory(html_dir)
+ensure_directory(log_dir)
+
+# Find the most recent XML file
+xml_file = find_most_recent_xml(xml_dir)
+
+# Generate a timestamped HTML filename
+html_file = timestamped_filename(os.path.join(html_dir, 'TEST-CalculatorTestSuite'), 'html')
 
 # Generate a timestamped log filename
 log_filename = timestamped_filename(os.path.join(log_dir, 'transform'), 'log')
@@ -68,20 +84,14 @@ def transform_xml_to_html(xml_file, xslt_file, html_file):
             f.write(etree.tostring(html, pretty_print=True))
         logging.info("Transformation completed successfully")
 
+    except FileNotFoundError as e:
+        logging.error(e)
     except etree.XMLSyntaxError as e:
         logging.error(f"XML syntax error: {e}")
     except etree.XSLTParseError as e:
         logging.error(f"XSLT parse error: {e}")
-    except FileNotFoundError as e:
-        logging.error(e)
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
-
-# Backup the XML file
-backup_xml_file(xml_file, backup_dir)
-
-# Generate a corresponding HTML file name
-html_file = timestamped_filename(os.path.join(html_dir, 'TEST-CalculatorTestSuite'), 'html')
 
 # Execute the transformation
 transform_xml_to_html(xml_file, xslt_file, html_file)
