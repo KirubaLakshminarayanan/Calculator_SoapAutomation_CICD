@@ -24,8 +24,14 @@ def get_latest_file(directory, extension):
     latest_file = max(files, key=lambda f: os.path.getmtime(os.path.join(directory, f)))
     return os.path.join(directory, latest_file)
 
+# Hardcoded paths
+xml_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML'
+html_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\HTML'
+xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
+log_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\Log'
+
 # Generate a timestamped log filename
-log_filename = timestamped_filename('C:\\Reports\\SoapUI_CICD_Calculator\\Log\\transform', 'log')
+log_filename = timestamped_filename(os.path.join(log_dir, 'transform'), 'log')
 
 # Configure logging
 logging.basicConfig(
@@ -67,11 +73,6 @@ def transform_xml_to_html(xml_file, xslt_file, html_file):
         logging.error(e)
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
-
-# Paths to directories
-xml_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML'
-html_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\HTML'
-xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
 
 # Get the latest XML directory with the prefix 'TEST-CalculatorTestSuite'
 latest_dir = get_latest_directory(xml_dir, 'TEST-CalculatorTestSuite')

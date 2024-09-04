@@ -1,0 +1,15 @@
+[Paths]
+xml_dir = C:\\Reports\\SoapUI_CICD_Calculator\\XML
+html_dir = C:\\Reports\\SoapUI_CICD_Calculator\\HTML
+xslt_file = C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt
+log_dir = C:\\Reports\\SoapUI_CICD_Calculator\\Log
+
+[FilePrefix]
+xml_directory_prefix = TEST-CalculatorTestSuite
+html_file_prefix = TEST-CalculatorTestSuite
+
+[Logging]
+log_file_prefix = transform
+
+[Settings]
+chunk_size = 10
