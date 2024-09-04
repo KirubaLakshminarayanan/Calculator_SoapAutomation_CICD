@@ -1,6 +1,7 @@
 import logging
-from lxml import etree
+import shutil
 import os
+from lxml import etree
 from datetime import datetime
 
 # Function to generate timestamped filename
@@ -8,27 +9,24 @@ def timestamped_filename(base_path, extension):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{base_path}_{timestamp}.{extension}"
 
-# Function to get the latest directory from a directory that matches a prefix
-def get_latest_directory(directory, prefix):
-    dirs = [d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d)) and d.startswith(prefix)]
-    if not dirs:
-        raise FileNotFoundError(f"No directories starting with {prefix} found in {directory}")
-    latest_dir = max(dirs, key=lambda d: os.path.getmtime(os.path.join(directory, d)))
-    return os.path.join(directory, latest_dir)
+# Function to back up XML file
+def backup_xml_file(source_file, backup_dir):
+    if not os.path.exists(source_file):
+        raise FileNotFoundError(f"Source XML file not found: {source_file}")
+    
+    if not os.path.exists(backup_dir):
+        os.makedirs(backup_dir)
 
-# Function to get the latest file from a directory
-def get_latest_file(directory, extension):
-    files = [f for f in os.listdir(directory) if f.endswith(f'.{extension}')]
-    if not files:
-        raise FileNotFoundError(f"No files with extension .{extension} found in {directory}")
-    latest_file = max(files, key=lambda f: os.path.getmtime(os.path.join(directory, f)))
-    return os.path.join(directory, latest_file)
+    backup_file = timestamped_filename(os.path.join(backup_dir, 'TEST-CalculatorTestSuite_backup'), 'xml')
+    shutil.copy2(source_file, backup_file)
+    logging.info(f"Backup created: {backup_file}")
 
 # Hardcoded paths
-xml_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML'
+xml_file = 'C:\\Reports\\SoapUI_CICD_Calculator\\XML\\TEST-CalculatorTestSuite.xml'
 html_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\HTML'
 xslt_file = 'C:\\Users\\LKiruba\\Desktop\\SoapUI_Automation_CICD\\report-transform.xslt'
 log_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\Log'
+backup_dir = 'C:\\Reports\\SoapUI_CICD_Calculator\\Backup'
 
 # Generate a timestamped log filename
 log_filename = timestamped_filename(os.path.join(log_dir, 'transform'), 'log')
@@ -74,11 +72,8 @@ def transform_xml_to_html(xml_file, xslt_file, html_file):
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
 
-# Get the latest XML directory with the prefix 'TEST-CalculatorTestSuite'
-latest_dir = get_latest_directory(xml_dir, 'TEST-CalculatorTestSuite')
-
-# Get the latest XML file from the latest directory
-xml_file = get_latest_file(latest_dir, 'xml')
+# Backup the XML file
+backup_xml_file(xml_file, backup_dir)
 
 # Generate a corresponding HTML file name
 html_file = timestamped_filename(os.path.join(html_dir, 'TEST-CalculatorTestSuite'), 'html')
