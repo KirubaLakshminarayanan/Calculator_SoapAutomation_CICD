@@ -53,14 +53,9 @@ def transform_xml_to_html(xml_file, xslt_file, html_file):
         xslt = etree.parse(xslt_file)
         transform = etree.XSLT(xslt)
         
-        # Pass the current date and time as a parameter
-        params = {
-            'generation_date': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-        
         # Transform XML to HTML
         logging.info("Starting XML to HTML transformation")
-        html = transform(xml, generation_date=etree.XSLT.strparam(params['generation_date']))
+        html = transform(xml)
         
         # Save the HTML to a file
         logging.info(f"Saving HTML file: {html_file}")

@@ -7,7 +7,6 @@
             <head>
                 <title>Test Report</title>
                 <style>
-                    body { font-family: Arial, sans-serif; }
                     table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
                     th, td { border: 1px solid #ddd; padding: 8px; }
                     th { background-color: #4CAF50; color: white; text-align: left; }
@@ -16,8 +15,6 @@
                     .status-passed { color: green; }
                     .status-failed { color: red; }
                     .status-unknown { color: orange; }
-                    h1, h2, h3 { color: #333; }
-                    .footer { margin-top: 20px; font-size: small; color: #666; }
                 </style>
             </head>
             <body>
@@ -88,18 +85,13 @@
                         </tbody>
                     </table>
                 </xsl:for-each>
-
+                
                 <!-- Footer with report generation details -->
                 <div class="footer">
-                    <p>Report generated on: <xsl:value-of select="current-date()" /></p>
+                    <p>Report generated on: <xsl:value-of select="$generation_date" /></p>
                 </div>
             </body>
         </html>
     </xsl:template>
-    
-    <!-- Current date function for the footer -->
-    <xsl:function name="current-date">
-        <xsl:value-of select="substring(translate(current-date(), '-', ''), 1, 8)" />
-    </xsl:function>
 
 </xsl:stylesheet>
